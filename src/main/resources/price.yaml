@@ -1,0 +1,200 @@
+openapi: 3.0.3
+info:
+  title: Swagger Contract - OpenAPI 3.0
+  description: |-
+    This is a sample Company Store Server based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io). In the third iteration of the Company store, we've switched to the design first approach!
+    You can now help us improve the API whether it's by making changes to the definition itself or to the code.
+    That way, with time, we can improve the API in general, and expose some of the new features in OAS3.
+
+    _If you're looking for the Swagger 2.0/OAS 2.0 version of Companystore, then click [here](https://editor.swagger.io/?url=https://Companystore.swagger.io/v2/swagger.yaml). Alternatively, you can load via the `Edit > Load Companystore OAS 2.0` menu option!_
+    
+    Some useful links:
+    - [The Company Store repository](https://github.com/swagger-api/swagger-Companystore)
+    - [The source API definition for the Company Store](https://github.com/swagger-api/swagger-Companystore/blob/master/src/main/resources/openapi.yaml)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://localhost:8080/api/v3
+tags:
+  - name: price
+    description: Everything about your prices
+
+paths:
+  /price/all:
+    get:
+      tags:
+        - price
+      summary: Find all price
+      description: Returns all price
+      operationId: getPrices
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Price'
+        '400':
+          description: Invalid operation
+        '404':
+          description: Contract not found
+  /price/getByContracts:
+    get:
+      tags:
+        - price
+      summary: Find prices by contracts
+      description: Returns prices
+      operationId: getPricesByContracts
+      parameters:
+        - name: idContract
+          in: header
+          description: idContract to return prices
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+              example: [1,3,5]
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Price'
+        '400':
+          description: Invalid operation
+        '404':
+          description: Price not found
+  /price/add:
+    post:
+      tags:
+        - price
+      summary: Add a new price to the db
+      description: Add a new price to the db
+      operationId: addPrice
+      requestBody:
+        description: Create a new price in db
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Price'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Price'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Price'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Price'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Price'
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception
+  /price/delete/{id}:
+    delete:
+      tags:
+        - price
+      summary: Deletes a price
+      description: delete a price
+      operationId: deletePrice
+      parameters:
+        - name: id
+          in: path
+          description: price id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid id
+        '422':
+          description: Validation exception
+  /price/update:
+    put:
+      tags:
+        - price
+      summary: Update an existing price
+      description: Update an existing price by Id
+      operationId: updatePrice
+      requestBody:
+        description: Update an existent price
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Price'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Price'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Price'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Price'          
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Price'
+        '400':
+          description: Invalid data
+        '404':
+          description: Price not found
+        '422':
+          description: Validation exception
+          
+components:
+  schemas:
+   Price:
+      required:
+        - id
+        - idContract
+        - value
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        value:
+          type: number
+          format: float
+          multipleOf: 0.01
+          example: 400.5
+        idContract:
+          type: integer
+          format: int64
+          example: 10
+      xml:
+        name: Contract
